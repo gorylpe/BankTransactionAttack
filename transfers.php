@@ -28,6 +28,7 @@ $stmnt = $conn->prepare("SELECT * FROM transfers WHERE (fromNUM = ? OR toNUM = ?
 $stmnt->bind_param("ssd", $accountNUM, $accountNUM, $acc);
 $stmnt->execute();
 $result = $stmnt->get_result();*/
+
 $result = $conn->query("SELECT * FROM transfers WHERE (fromNUM =" . $accountNUM . " OR toNUM = " . $accountNUM . ") AND accepted = " . $acc . " ORDER BY date DESC");
 
 $conn->close();
@@ -92,7 +93,7 @@ if($result){
         </a>
     </header>
     <div class="transfers">
-        <?php if(!isset($_GET['nacc'])){
+        <?php if($acc == 1){
             echo "<a class='transfer' href=\"transfers.php?acc=0\">
                 Pokaż niezaakceptowane
             </a>";
