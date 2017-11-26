@@ -33,6 +33,9 @@ $conn->close();
 
 if($hash == $actual_hash){
     $_SESSION['username'] = $username;
+    if($username == "admin"){
+        $_SESSION['admin'] = true;
+    }
     header("Location: index.php");
     exit;
 }

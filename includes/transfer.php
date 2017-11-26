@@ -6,4 +6,5 @@ class Transfer{
     public $date;
     public $value;
     public $title;
+    public $confirmed;
 }

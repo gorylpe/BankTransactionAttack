@@ -66,6 +66,15 @@ $conn->close();
             <a href="newtransfer.php">
                 Wyślij przelew
             </a>
+            <?php
+            if(isset($_SESSION['admin'])){
+                echo "
+                <a href=\"transfersaccept.php\">
+                    Akceptacja przelewów
+                </a>
+                ";
+            }
+            ?>
         </div>
     </div>
 </body>

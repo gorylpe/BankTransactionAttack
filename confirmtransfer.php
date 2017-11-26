@@ -19,11 +19,14 @@ $accountVALUE = $row[1];
 
 $conn->close();
 
-$toNUM = htmlspecialchars($_POST['to']);
+/*$toNUM = htmlspecialchars($_POST['to']);
 if(!preg_match("/[0-9]{26}/", $toNUM)){
     header("Location: newtransfer.php?status=error");
     exit;
-}
+}*/
+//XSS
+$toNUM = $_POST['to'];
+
 $value = htmlspecialchars($_POST['value']);
 if(!preg_match("/[0-9]{1,98}(.[0-9]{1,2})?/", $value)){
     header("Location: newtransfer.php?status=error");

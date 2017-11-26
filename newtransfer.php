@@ -84,6 +84,7 @@ if(isset($_POST['title'])) {
         </h2>
         <?php
         if(isset($_GET['status'])){
+            echo $_GET['status'] . "-";
             switch(htmlspecialchars($_GET['status'])){
                 case "insufficient_funds":
                     echo "<h2 class='text-center error'>NIEWYSTARCZAJĄCE ŚRODKI</h2>";

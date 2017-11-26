@@ -1,34 +1,19 @@
 <?php
 require_once "includes/start.php";
 require_once "includes/loggedin.php";
+require_once "includes/admin.php";
 
 require_once "includes/dbdata.php";
 require_once "includes/transfer.php";
 
+
 global $username;
-
-$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
-
-$stmnt = $conn->prepare("SELECT accountNUM FROM users WHERE username = ?");
-$stmnt->bind_param("s", $username);
-$stmnt->execute();
-
-$result = $stmnt->get_result();
-$row = $result->fetch_row();
-$accountNUM = $row[0];
 
 $transfers = array();
 
-$acc = 1;
-if(isset($_GET['acc']))
-    $acc = $_GET['acc'];
-//SQLI
-/*
-$stmnt = $conn->prepare("SELECT * FROM transfers WHERE (fromNUM = ? OR toNUM = ?) AND accepted = ? ORDER BY date DESC");
-$stmnt->bind_param("ssd", $accountNUM, $accountNUM, $acc);
-$stmnt->execute();
-$result = $stmnt->get_result();*/
-$result = $conn->query("SELECT * FROM transfers WHERE (fromNUM =" . $accountNUM . " OR toNUM = " . $accountNUM . ") AND accepted = " . $acc . " ORDER BY date DESC");
+$conn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+
+$result = $conn->query("SELECT * FROM transfers WHERE accepted = FALSE ORDER BY date DESC");
 
 $conn->close();
 
@@ -44,7 +29,6 @@ if($result){
         array_push($transfers, $transfer);
     }
 }
-
 ?>
 
 <html>
@@ -68,10 +52,14 @@ if($result){
             border: 1px solid black;
             padding: 10px;
         }
-        .details{
+        .accept{
             position: absolute;
             right: 20px;
             top: 20px;
+            bottom: 20px;
+            border: solid black 1px;
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
@@ -79,10 +67,10 @@ if($result){
 <div class="container">
     <header>
         <h1 class="text-center">
-            Witaj <?php echo $username;?>
+            Lista przelewów niezaakceptowanych
         </h1>
         <h2 class="text-center">
-            Lista przelewów dla konta <?php echo $accountNUM;?>
+            Wybierz co chcesz zrobić
         </h2>
         <a class="button logout" href="logout.php">
             Wyloguj się
@@ -92,23 +80,17 @@ if($result){
         </a>
     </header>
     <div class="transfers">
-        <?php if(!isset($_GET['nacc'])){
-            echo "<a class='transfer' href=\"transfers.php?acc=0\">
-                Pokaż niezaakceptowane
-            </a>";
-        }
-        else{
-            echo "<a class='transfer' href=\"transfers.php?acc=1\">
-                Pokaż zaakceptowane
-            </a>";
-        }
+        <?php
         foreach($transfers as $transfer){
             echo "
-        <div class='transfer'>
-            <h3>To: " . $transfer->to . "</h3>
-            <h3>Value: " . $transfer->value . "zł</h3>
-            <a class='button details' href='gettransfer.php?id=" . $transfer->id . "'>Szczegóły</a>
-        </div>";
+    <div class='transfer'>
+        <h3>From: " . $transfer->from . "</h3>
+        <h3>To: " . $transfer->to . "</h3>
+        <h3>Date: " . $transfer->date . "</h3>
+        <h3>Value: " . $transfer->value . "zł</h3>
+        <a class='accept' href='accepttransfer.php?id=" . $transfer->id . "'>Akceptuj przelew</a>
+    </div>
+            ";
         }
         ?>
     </div>
